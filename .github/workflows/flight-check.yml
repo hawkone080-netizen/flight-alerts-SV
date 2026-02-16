@@ -1,0 +1,29 @@
+name: Flight Price Check
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
+
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Instalar dependencias
+        run: pip install requests
+
+      - name: Ejecutar script
+        env:
+          AMADEUS_KEY: ${{ secrets.AMADEUS_KEY }}
+          AMADEUS_SECRET: ${{ secrets.AMADEUS_SECRET }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python flight_alert.py
